@@ -1,5 +1,8 @@
 # hand-detection
 
+## Skin color detector
+- Run ``python hand_skin_detector.py``
+
 ## Using single shot multibox detector (SSD) model
 - Go to ssd directory `cd ssd/`
 
@@ -12,3 +15,4 @@
   - `./preprocessing.sh DATASET_PATH`
   - `./train.sh`
   - `./export_graph.sh`
+
