@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+from glob import glob
+from pprint import pprint
+import yaml
+
+for fname in glob('models/**/config.yml', recursive=True):
+    with open(fname, 'r+') as f:
+        model = yaml.load(f.read())
+        layer = model['config']['layers'][-1]
+        if layer['name'] == 'detections':
+            print(fname)
+            pprint(layer)
+            layer.pop('function', None)
+            layer.pop('function_type', None)
+            layer['config']['function'] = 'non_max_suppression'
+            layer['config']['function_type'] = 'function'
+            pprint(layer)
+            f.seek(0)
+            f.truncate()
+            f.write(yaml.dump(model))
