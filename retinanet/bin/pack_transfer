@@ -1,0 +1,31 @@
+#!/bin/bash
+
+ls $1 --human-readable -l
+rm /tmp/code -rf
+mkdir /tmp/code/models -p
+cp *.py requirements3.txt /tmp/code/
+cp data/class-map.csv /tmp/code/
+cp $(dirname $1)/config.yml /tmp/code/models/
+cp $1 /tmp/code/models/
+
+dir=$(pwd)/data/codezip
+weights=$(basename $1)
+filename=$dir/${1//"/"/_}
+filename=${filename/".h5"/""}
+shift
+args="$*"
+filename=${filename}_${args//" "/_}.zip
+echo $filename
+
+cd /tmp/code
+if [ -z "$1" ]; then
+    echo "error: annotate-thresh unset"
+    exit 1
+fi
+echo "python3 transfer.py --data-valid --class-map class-map.csv --weights models/$weights --annotate-thresh $@" > run
+cat run
+bash run
+rm __pycache__ -rf
+mkdir $dir -p
+rm $filename -f
+zip $filename * -r
